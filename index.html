@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eval & Ops Lab</title>
+<title>LLM Foundations Lab</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F7F8FA;--surface:#FFFFFF;--surface-2:#FBFCFD;--border:#E3E7ED;--border-strong:#D2D8E2;
@@ -52,6 +52,8 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.025em;margin-bottom:7px}
 .reqs span.met{color:var(--ok)}
 
 /* ---- module 1: highway game ---- */
+.hero{display:block;width:100%;aspect-ratio:16/9;max-height:210px;object-fit:cover;border-radius:12px;margin-bottom:16px;border:1px solid var(--border);box-shadow:0 6px 20px rgba(16,24,40,.10)}
+.hero[hidden]{display:none}
 .gamecol{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
 @media(max-width:980px){.gamecol{grid-template-columns:minmax(0,1fr)}}
 .qcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px}
@@ -105,6 +107,37 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.025em;margin-bottom:7px}
   .pads{display:none}
 }
 
+/* ---- module 2: chooser ---- */
+.chooser{display:grid;grid-template-columns:330px minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:900px){.chooser{grid-template-columns:minmax(0,1fr)}}
+.ctrl{margin-bottom:18px}
+.ctrl label{display:flex;justify-content:space-between;font-size:.79rem;font-weight:600;color:var(--ink-2);margin-bottom:9px}
+.ctrl label b{font-family:var(--mono);color:var(--accent)}
+.ctrl input[type=range]{width:100%;height:26px;-webkit-appearance:none;background:transparent}
+.ctrl input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--border)}
+.ctrl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:#fff;border:3px solid var(--accent);margin-top:-8px;box-shadow:0 2px 6px rgba(16,24,40,.2)}
+.ctrl input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(--border)}
+.ctrl input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--accent)}
+.scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.62rem;color:var(--ink-3);margin-top:2px}
+.toggles{display:grid;gap:8px}
+.tg{text-align:left;background:var(--surface);border:1.5px solid var(--border);border-radius:9px;
+  padding:11px 13px;font-size:.8rem;font-weight:600;color:var(--ink-2)}
+.tg.on{border-color:var(--accent);background:var(--accent-soft);color:#1E3A8A}
+.note{font-size:.72rem;color:var(--ink-3);line-height:1.55;border-top:1px solid var(--border);padding-top:12px}
+.row2{margin-bottom:15px}
+.row2 .top{display:flex;justify-content:space-between;align-items:baseline;font-size:.82rem;font-weight:600;margin-bottom:6px}
+.row2 .amt{font-family:var(--mono);font-weight:700}
+.row2 .track2{height:14px;border-radius:7px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}
+.row2 .fill2{height:100%;border-radius:7px;transition:width .35s ease}
+.row2 .meta{display:flex;gap:12px;font-family:var(--mono);font-size:.66rem;color:var(--ink-3);margin-top:5px;flex-wrap:wrap}
+.row2.out{opacity:.42}
+.row2 .tagx{color:var(--err)}
+.pick .big2{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.pick .why2{font-size:.85rem;color:var(--ink-2);line-height:1.65}
+.pick .why2 b{color:var(--ink)}
+.pick .band{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--ok-soft);color:#046C4E;border:1px solid #A7E8CB;border-radius:6px;padding:4px 9px;margin-bottom:10px}
 /* ---- module 2: pipeline ---- */
 .grid2{display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px;align-items:start}
 @media(max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
@@ -168,28 +201,29 @@ svg.ropes path{fill:none;stroke-width:2.5;stroke-linecap:round}
 <body>
 
 <div class="topbar"><div class="topinner">
-  <div class="brandmark"><span class="dotlogo"></span><span class="n">Eval &amp; Ops Lab</span><span class="v">v1.0</span></div>
+  <div class="brandmark"><span class="dotlogo"></span><span class="n">LLM Foundations Lab</span><span class="v">v1.0</span></div>
   <div class="tabs">
     <button class="tab active" data-v="v1"><span class="step">01</span>Ship It Highway</button>
-    <button class="tab" data-v="v2"><span class="step">02</span>Release Pipeline</button>
+    <button class="tab" data-v="v2"><span class="step">02</span>Model Chooser</button>
   </div>
 </div></div>
 
 <!-- ============ MODULE 1 ============ -->
 <section class="view on" id="v1">
-  <div class="sticker" style="left:1.5%;top:18%;--rot:-3deg;--dur:8s"><div class="stk"><span class="b" style="--c:#2563EB"></span>8 gates to prod</div></div>
+  <div class="sticker" style="left:1.5%;top:18%;--rot:-3deg;--dur:8s"><div class="stk"><span class="b" style="--c:#2563EB"></span>8 gates to launch</div></div>
   <div class="sticker" style="left:2.5%;top:33%;--rot:2deg;--dur:9s"><div class="stk"><span class="k">tip</span> tap the lane you want</div></div>
-  <div class="sticker" style="left:1.5%;top:49%;--rot:-2deg;--dur:7.6s"><div class="stk stamp">ROUTE 200</div></div>
+  <div class="sticker" style="left:1.5%;top:49%;--rot:-2deg;--dur:7.6s"><div class="stk stamp">ROUTE 7B</div></div>
   <div class="sticker" style="right:1.5%;top:22%;--rot:3deg;--dur:8.4s"><div class="stk"><span class="b" style="--c:#059669"></span>3 tyres</div></div>
-  <div class="sticker" style="right:3%;top:40%;--rot:-2deg;--dur:9.1s"><div class="stk"><span class="k">exit</span> production</div></div>
+  <div class="sticker" style="right:3%;top:40%;--rot:-2deg;--dur:9.1s"><div class="stk"><span class="k">exit</span> shipped</div></div>
   <div class="sticker" style="right:1.5%;top:58%;--rot:2deg;--dur:7.9s"><div class="stk stamp">DRIVE ✓</div></div>
 
   <div class="page">
     <div class="head">
-      <div class="kicker">Module 01 · Ship It Highway</div>
-      <h1>Drive it to production</h1>
-      <p class="lede">Every gate on this road is a quality check. Steer into the correct lane to pass — wrong lane and you hit the barrier.</p>
+      <div class="kicker">Module 01 · Model Road</div>
+      <h1>Drive the model road</h1>
+      <p class="lede">Every gate on this road is a decision about running an LLM. Steer into the correct lane to pass — wrong lane and you hit the barrier.</p>
     </div>
+    <img class="hero" id="hero" alt="" hidden>
 
     <div class="gamecol">
       <div>
@@ -209,8 +243,8 @@ svg.ropes path{fill:none;stroke-width:2.5;stroke-linecap:round}
           <div class="lockflash" id="lockflash"></div>
           <div class="gover on" id="goStart">
             <div class="big">🚙</div>
-            <h3>Ship It Highway</h3>
-            <p>You're driving release v7 to production. Eight checkpoints stand between you and the deploy — pick the right lane at each one.</p>
+            <h3>Model Road</h3>
+            <p>You're taking one idea from laptop to launch. Eight checkpoints on the way — pick the right lane at each one.</p>
             <button class="btn" id="btnStart">Start engine</button>
             <div class="tiphint">phone: tap a lane · desktop: ↑ ↓ arrows</div>
           </div>
@@ -245,44 +279,57 @@ svg.ropes path{fill:none;stroke-width:2.5;stroke-linecap:round}
 
 <!-- ============ MODULE 2 ============ -->
 <section class="view" id="v2">
-  <div class="sticker" style="left:1.5%;top:18%;--rot:-3deg;--dur:8s"><div class="stk"><span class="b" style="--c:#7C3AED"></span>CI required</div></div>
-  <div class="sticker" style="left:3%;top:33%;--rot:2deg;--dur:9s"><div class="stk"><span class="k">req</span> 5 stages · 4 edges</div></div>
-  <div class="sticker" style="left:1.5%;top:49%;--rot:-2deg;--dur:7.6s"><div class="stk stamp">PIPELINE</div></div>
-  <div class="sticker" style="right:1.5%;top:22%;--rot:3deg;--dur:8.4s"><div class="stk"><span class="b" style="--c:#059669"></span>canary 5%</div></div>
-  <div class="sticker" style="right:3%;top:40%;--rot:-2deg;--dur:9.1s"><div class="stk"><span class="k">rollback</span> &lt; 60s</div></div>
-  <div class="sticker" style="right:1.5%;top:58%;--rot:2deg;--dur:7.9s"><div class="stk stamp">RELEASE ✓</div></div>
+  <div class="sticker" style="left:1.5%;top:18%;--rot:-3deg;--dur:8s"><div class="stk"><span class="b" style="--c:#7C3AED"></span>cost · privacy · power</div></div>
+  <div class="sticker" style="left:3%;top:33%;--rot:2deg;--dur:9s"><div class="stk"><span class="k">local</span> ₹0 per call</div></div>
+  <div class="sticker" style="left:1.5%;top:49%;--rot:-2deg;--dur:7.6s"><div class="stk stamp">PICK ONE</div></div>
+  <div class="sticker" style="right:1.5%;top:22%;--rot:3deg;--dur:8.4s"><div class="stk"><span class="b" style="--c:#059669"></span>1M tokens</div></div>
+  <div class="sticker" style="right:3%;top:40%;--rot:-2deg;--dur:9.1s"><div class="stk"><span class="k">tip</span> prototype local first</div></div>
+  <div class="sticker" style="right:1.5%;top:58%;--rot:2deg;--dur:7.9s"><div class="stk stamp">MATH ✓</div></div>
 
   <div class="page">
     <div class="head">
-      <div class="kicker">Module 02 · LLMOps</div>
-      <h1>Release pipeline</h1>
-      <p class="lede">Wire the stages a prompt change must pass before it reaches users, then run the release.</p>
+      <div class="kicker">Module 02 · Decisions</div>
+      <h1>Model chooser</h1>
+      <p class="lede">Describe your app. See what each option would actually cost, and which one fits.</p>
     </div>
-    <div class="grid2">
+
+    <div class="chooser">
       <div class="card">
-        <div class="card-h"><span class="t">Stages</span><span class="m">7</span></div>
-        <div class="card-b" id="rack"></div>
-      </div>
-      <div>
-        <div class="canvas" id="canvas">
-          <svg class="ropes" id="ropes"></svg>
-          <div class="hint" id="hint">pipeline empty<br>add stages from the panel →</div>
-        </div>
-        <div class="bar">
-          <button class="btn" id="release">Run release</button>
-          <button class="btn sec" id="reset">Clear pipeline</button>
-          <span class="leds" id="runleds" style="margin-left:4px"></span>
-          <div class="reqs"><span id="r1">stages 0/5</span><span id="r2">links 0/4</span></div>
-        </div>
-        <div class="term-out">
-          <div class="term-bar"><span class="dots"><i></i><i></i><i></i></span><span class="ttl">ci — release</span></div>
-          <div class="term-body" id="tout"><span class="d">$ </span><span class="caret"></span></div>
-          <div class="metrics" id="metrics">
-            <div><div class="k">Evals</div><div class="v" id="m1">—</div></div>
-            <div><div class="k">Faithfulness</div><div class="v" id="m2">—</div></div>
-            <div><div class="k">p95</div><div class="v" id="m3">—</div></div>
-            <div><div class="k">Traffic</div><div class="v" id="m4">—</div></div>
+        <div class="card-h"><span class="t">Your app</span><span class="m">INPUTS</span></div>
+        <div class="card-b">
+          <div class="ctrl">
+            <label>Requests per day <b id="vReq">1,000</b></label>
+            <input type="range" id="req" min="0" max="4" step="0.05" value="2">
+            <div class="scale"><span>100</span><span>1k</span><span>10k</span><span>100k</span></div>
           </div>
+          <div class="ctrl">
+            <label>Words sent per request <b id="vIn">300</b></label>
+            <input type="range" id="tin" min="50" max="3000" step="50" value="300">
+          </div>
+          <div class="ctrl">
+            <label>Words written back <b id="vOut">150</b></label>
+            <input type="range" id="tout2" min="30" max="1200" step="10" value="150">
+          </div>
+          <div class="ctrl">
+            <label>Needs</label>
+            <div class="toggles">
+              <button class="tg" data-t="priv">Data must stay private</button>
+              <button class="tg" data-t="hard">Hard reasoning task</button>
+              <button class="tg" data-t="offline">Must work offline</button>
+            </div>
+          </div>
+          <p class="note">Prices below are illustrative per-million-token rates for comparison, not a live price list — always check your provider.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-h"><span class="t">Monthly cost comparison</span><span class="m" id="mTok">—</span></div>
+          <div class="card-b"><div id="bars"></div></div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="card-h"><span class="t">Verdict</span><span class="m">RECOMMENDATION</span></div>
+          <div class="card-b"><div class="pick" id="pick"></div></div>
         </div>
       </div>
     </div>
@@ -290,6 +337,10 @@ svg.ropes path{fill:none;stroke-width:2.5;stroke-linecap:round}
 </section>
 
 <script>
+/* ===== paste your generated image URL between the quotes ===== */
+const HERO_IMAGE="";
+/* ============================================================ */
+if(HERO_IMAGE){const h=document.getElementById("hero");h.src=HERO_IMAGE;h.hidden=false;}
 document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
@@ -298,30 +349,30 @@ document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{
 
 /* ============ MODULE 1 : SHIP IT HIGHWAY ============ */
 const GATES=[
- {q:"Which metric catches a hallucinated answer?",
-  opts:["Faithfulness","Latency p95","Server uptime"],a:0,
-  why:"<b>Faithfulness</b> scores whether every claim traces back to the retrieved context. Latency and uptime can be perfect while the answer is invented."},
- {q:"The answer matched its source — but the source was the wrong document. Which score is low?",
-  opts:["Faithfulness","Context recall","Token count"],a:1,
-  why:"<b>Context recall</b> measures whether retrieval fetched what was needed. Faithfulness stays high because the model faithfully used the wrong page."},
- {q:"A user uploads a PDF containing “ignore all previous instructions”. That's called…",
-  opts:["Rate limiting","Cache miss","Prompt injection"],a:2,
-  why:"<b>Prompt injection.</b> Anything your agent reads is untrusted data, never instructions. Strip and flag it at the input guardrail."},
- {q:"Where should your API keys live?",
-  opts:["Server env vars","Frontend code","Inside the prompt"],a:0,
-  why:"Frontend code and prompts are both readable by users. Keys belong in <b>server-side environment variables</b> only."},
- {q:"Which tool traces every request with its cost, latency and prompt version?",
-  opts:["Figma","Langfuse","Excel"],a:1,
-  why:"<b>Langfuse</b> is observability for LLM apps — spans, tokens, cost, latency, in production. Debugging without traces is guessing."},
- {q:"Which framework gives you pytest-style tests for LLM apps?",
-  opts:["Docker","Nginx","DeepEval"],a:2,
-  why:"<b>DeepEval</b> lets you assert that output clears a metric threshold, and run it in CI like any other test."},
- {q:"Which library is built to grade a RAG pipeline end to end?",
-  opts:["Ragas","Redis","Git"],a:0,
-  why:"<b>Ragas</b> scores retrieval and generation together — faithfulness, answer relevancy, context precision and recall."},
- {q:"Releasing to 5% of traffic first, watching metrics, then promoting is a…",
-  opts:["Big-bang launch","Canary release","Hotfix"],a:1,
-  why:"<b>Canary release.</b> A small blast radius means you find the regression before most users ever meet it."}
+ {q:"What is an LLM actually doing when it answers you?",
+  opts:["Searching the web","Predicting the next chunk of text","Playing a recording"],a:1,
+  why:"It's a <b>next-token predictor</b>. Everything it can do — answering, coding, translating — comes out of doing that one trick very fast, millions of times."},
+ {q:"A 'token' is roughly…",
+  opts:["A password","Three-quarters of a word","One megabyte"],a:1,
+  why:"Models read and write in <b>tokens</b> — chunks about ¾ of a word. Every API bill is counted in them, so the word is everywhere."},
+ {q:"Running a model 'locally' means…",
+  opts:["It runs on your own computer, offline","You use ChatGPT in a browser","It runs in your city"],a:0,
+  why:"The model file sits on your machine. <b>No internet, no bill, nothing leaves the laptop</b> — in exchange for a smaller, less capable model."},
+ {q:"Which tool gets a model running on your laptop fastest?",
+  opts:["Canva","Ollama","Slack"],a:1,
+  why:"<b>Ollama</b> — two commands: pull the model, run it. LM Studio is the click-based alternative if you'd rather avoid a terminal."},
+ {q:"A model labelled 7B-q4 is…",
+  opts:["7 billion parameters, shrunk to fit RAM","7 bytes","Version 4 of model 7"],a:0,
+  why:"<b>7B</b> = 7 billion parameters. <b>q4</b> = quantized — stored less precisely so 14GB becomes about 4GB. Slightly dumber, dramatically runnable."},
+ {q:"Why pay for a hosted API instead of running locally?",
+  opts:["APIs work without electricity","Far bigger models, no powerful PC needed","Local models are illegal"],a:1,
+  why:"You rent someone's giant model and their GPUs. The cost is money per token — and your data leaving your machine."},
+ {q:"Where does an API key belong?",
+  opts:["In your frontend code","In a server environment variable","In the prompt"],a:1,
+  why:"A key is a password with a bill attached. Frontend code is readable by every visitor — 'view source' isn't hacking."},
+ {q:"You need the model to know your company's latest policy doc. Use…",
+  opts:["Fine-tuning","RAG","A higher temperature"],a:1,
+  why:"<b>Fine-tuning teaches style, RAG supplies facts.</b> Documents change weekly; retraining for that is slow and expensive, while RAG updates in seconds."}
 ];
 const cv=document.getElementById('road'),ctx2=cv.getContext('2d');
 const wrap=document.getElementById('gamewrap'),optbar=document.getElementById('optbar');
@@ -579,7 +630,7 @@ function hud(){
   document.getElementById('hudSpeed').textContent=Math.round(speed*0.42)+' km/h';
 }
 function legend(){
-  const tags=['hallucination','wrong source','injection','secrets','tracing','testing','RAG evals','rollout'];
+  const tags=['what an LLM is','tokens','local','ollama','7B / q4','why APIs','api keys','RAG vs tune'];
   document.getElementById('legend').innerHTML=GATES.map((G,i)=>{
     const st=results[i]===true?'<span class="done">cleared ✓</span>':results[i]===false?'<span class="miss">hit ✗</span>':'<span class="v">—</span>';
     return `<div class="rowl"><span>${i+1}. ${tags[i]}</span>${st}</div>`;}).join('');
@@ -664,12 +715,12 @@ document.getElementById('btnGo').onclick=()=>{
 function showEnd(reached){
   const c=results.filter(Boolean).length;
   document.getElementById('endBig').textContent=!reached?'🛠️':c===GATES.length?'🏁':'🚧';
-  document.getElementById('endTitle').textContent=!reached?'Release blocked'
-    :c===GATES.length?'Deployed to production':'Deployed — with scars';
+  document.getElementById('endTitle').textContent=!reached?'Run ended early'
+    :c===GATES.length?'Shipped it':'Made it — with scrapes';
   document.getElementById('endText').textContent=!reached
-    ?`Out of tyres after ${c} clean gates. That's what a failing pipeline is for — it stops the release instead of your users finding out.`
-    :c===GATES.length?'Eight gates, zero barriers. Evals, guardrails and a canary — every check passed first time.'
-    :`Through with ${c} of ${GATES.length} gates cleared. Re-read the ones you hit; those are the checks a real pipeline would have caught.`;
+    ?`Out of tyres after ${c} clean gates. No harm done — replay the drop and drive it again.`
+    :c===GATES.length?'Eight gates, zero barriers. You understand tokens, local models, APIs and when to fine-tune.'
+    :`Through with ${c} of ${GATES.length} gates cleared. Re-read the ones you hit — those are the ideas worth a second pass.`;
   document.getElementById('goEnd').classList.add('on');
 }
 document.getElementById('btnStart').onclick=()=>{
@@ -699,149 +750,75 @@ addEventListener('resize',()=>{fit();});
 addEventListener('orientationchange',()=>setTimeout(fit,180));
 fit();reset();requestAnimationFrame(loop);
 
-/* ============ MODULE 2 : RELEASE PIPELINE ============ */
-const PARTS=[
- {id:"commit",n:"Prompt commit",c:"#D97706",d:"git push: prompt v7"},
- {id:"evals",n:"Eval suite",c:"#2563EB",d:"deepeval run · 12 cases"},
- {id:"sec",n:"Security scan",c:"#7C3AED",d:"injection + PII red team"},
- {id:"canary",n:"Canary 5%",c:"#0891B2",d:"5% traffic, watch metrics"},
- {id:"prod",n:"Prod + monitoring",c:"#059669",d:"100% + langfuse traces"},
- {id:"vibes",n:"Ship on vibes",c:"#98A2B3",d:"looked fine in one demo"},
- {id:"friday",n:"Friday 6pm deploy",c:"#98A2B3",d:"nobody on call"}
+/* ============ MODULE 2 : MODEL CHOOSER ============ */
+const MODELS=[
+ {id:'l3',n:'Local 3B (q4)',c:'#059669',in:0,out:0,ram:'~3 GB RAM',lat:'~1.5s on a laptop',
+  priv:true,off:true,power:1,note:'free forever, runs offline'},
+ {id:'l8',n:'Local 8B (q4)',c:'#0891B2',in:0,out:0,ram:'~6 GB RAM',lat:'~3s on a laptop',
+  priv:true,off:true,power:2,note:'noticeably smarter, needs a decent machine'},
+ {id:'hs',n:'Hosted · small tier',c:'#2563EB',in:0.15,out:0.60,ram:'no hardware needed',lat:'~0.9s',
+  priv:false,off:false,power:3,note:'cheap per call, good for most tasks'},
+ {id:'hl',n:'Hosted · frontier tier',c:'#7C3AED',in:3.00,out:15.00,ram:'no hardware needed',lat:'~1.8s',
+  priv:false,off:false,power:4,note:'best reasoning, 20x the price'}
 ];
-const ORDER=["commit","evals","sec","canary","prod"];
-const rack=document.getElementById('rack'),canvas=document.getElementById('canvas');
-const ropes=document.getElementById('ropes'),hint=document.getElementById('hint'),tout=document.getElementById('tout');
-let placed={},links=[],dragN=null,linking=null,tempRope=null,running=false;
-function fillRack(){rack.innerHTML='';
-  [...PARTS].sort(()=>Math.random()-.5).forEach(p=>rack.insertAdjacentHTML('beforeend',
-    `<button class="part" data-id="${p.id}" style="--bc:${p.c}"><span class="n">${p.n}<span class="add">+</span></span><span class="d">${p.d}</span></button>`));}
-fillRack();
-for(let i=0;i<5;i++)document.getElementById('runleds').insertAdjacentHTML('beforeend','<span class="led"></span>');
-rack.onclick=e=>{const c=e.target.closest('.part');if(c&&!c.disabled)addNode(c.dataset.id);};
-function addNode(id){
-  const p=PARTS.find(x=>x.id===id),W=canvas.clientWidth,H=canvas.clientHeight;
-  const x=20+Math.random()*Math.max(20,W-205),y=16+Math.random()*Math.max(20,H-112);
-  const n=document.createElement('div');n.className='node';n.dataset.id=id;
-  n.style.cssText=`--bc:${p.c};left:${x}px;top:${y}px`;
-  n.innerHTML=`<div class="hd"><span class="nm">${p.n}</span><span class="x">✕</span></div>
-    <div class="bd">${p.d}</div><span class="sock in"></span><span class="sock out"></span>`;
-  canvas.appendChild(n);placed[id]=n;hint.style.display='none';
-  rack.querySelector(`[data-id="${id}"]`).disabled=true;
-  n.querySelector('.x').onclick=ev=>{ev.stopPropagation();delNode(id);};updateReqs();
+const need={priv:false,hard:false,offline:false};
+const $=id=>document.getElementById(id);
+function reqPerDay(){return Math.round(Math.pow(10,2+parseFloat($('req').value)/2));}
+function fmtN(n){return n.toLocaleString('en-IN');}
+function money(v){
+  if(v===0)return '₹0';
+  const r=v*88; // illustrative USD→INR for comparison only
+  return r<100?'₹'+r.toFixed(0):r<100000?'₹'+fmtN(Math.round(r)):'₹'+(r/100000).toFixed(1)+'L';
 }
-function delNode(id){links=links.filter(l=>l.a!==id&&l.b!==id);placed[id].remove();delete placed[id];
-  rack.querySelector(`[data-id="${id}"]`).disabled=false;
-  if(!Object.keys(placed).length)hint.style.display='block';refresh();updateReqs();}
-function sockXY(id,w){const cr=canvas.getBoundingClientRect(),
-  s=placed[id].querySelector('.sock.'+w).getBoundingClientRect();
-  return [s.left-cr.left+s.width/2,s.top-cr.top+s.height/2];}
-function ropeD(x1,y1,x2,y2){const dx=Math.abs(x2-x1),sag=Math.min(52,22+dx*.16);
-  return `M${x1},${y1} C${x1+dx*.42},${y1+sag} ${x2-dx*.42},${y2+sag} ${x2},${y2}`;}
-function drawRopes(){ropes.innerHTML='';links.forEach(l=>{
-  if(!placed[l.a]||!placed[l.b])return;const a=sockXY(l.a,'out'),b=sockXY(l.b,'in');
-  const p=document.createElementNS('http://www.w3.org/2000/svg','path');
-  p.setAttribute('d',ropeD(a[0],a[1],b[0],b[1]));
-  p.setAttribute('stroke',PARTS.find(x=>x.id===l.a).c);ropes.appendChild(p);});}
-function refresh(){Object.keys(placed).forEach(id=>{
-  placed[id].querySelector('.sock.out').classList.toggle('filled',links.some(l=>l.a===id));
-  placed[id].querySelector('.sock.in').classList.toggle('filled',links.some(l=>l.b===id));});drawRopes();}
-function updateReqs(){const n=Object.keys(placed).length;
-  const r1=document.getElementById('r1'),r2=document.getElementById('r2');
-  r1.textContent=`stages ${n}/5`;r1.classList.toggle('met',n>=5);
-  r2.textContent=`links ${links.length}/4`;r2.classList.toggle('met',links.length>=4);}
-addEventListener('resize',drawRopes);
-canvas.addEventListener('pointerdown',e=>{
-  const s=e.target.closest('.sock.out');
-  if(s){e.preventDefault();const id=s.closest('.node').dataset.id;linking={id};
-    tempRope=document.createElementNS('http://www.w3.org/2000/svg','path');
-    tempRope.setAttribute('stroke',PARTS.find(x=>x.id===id).c);
-    tempRope.setAttribute('stroke-dasharray','6 6');ropes.appendChild(tempRope);return;}
-  const hd=e.target.closest('.hd');
-  if(hd&&!e.target.classList.contains('x')){e.preventDefault();
-    const n=hd.closest('.node'),cr=canvas.getBoundingClientRect(),nr=n.getBoundingClientRect();
-    dragN={n,ox:e.clientX-(nr.left-cr.left),oy:e.clientY-(nr.top-cr.top)};}});
-addEventListener('pointermove',e=>{const cr=canvas.getBoundingClientRect();
-  if(dragN){dragN.n.style.left=Math.max(0,Math.min(cr.width-174,e.clientX-dragN.ox))+'px';
-    dragN.n.style.top=Math.max(0,Math.min(cr.height-76,e.clientY-dragN.oy))+'px';drawRopes();}
-  if(linking){const a=sockXY(linking.id,'out');
-    tempRope.setAttribute('d',ropeD(a[0],a[1],e.clientX-cr.left,e.clientY-cr.top));}});
-addEventListener('pointerup',e=>{dragN=null;
-  if(linking){tempRope.remove();tempRope=null;
-    const el=document.elementFromPoint(e.clientX,e.clientY),n=el&&el.closest('.node');
-    if(n&&n.dataset.id!==linking.id){const b=n.dataset.id;
-      links=links.filter(l=>l.a!==linking.id&&l.b!==b);links.push({a:linking.id,b});refresh();updateReqs();}
-    linking=null;}});
-let lines=[];
-function term(h){lines.push(h);tout.innerHTML=lines.join('<br>')+'<br><span class="caret"></span>';tout.scrollTop=tout.scrollHeight;}
-function clearTerm(){lines=[];tout.innerHTML='<span class="d">$ </span><span class="caret"></span>';}
-clearTerm();updateReqs();
-document.getElementById('release').onclick=()=>{
-  if(running)return;lines=[];document.getElementById('metrics').classList.remove('on');
-  const n=Object.keys(placed).length;
-  if(!placed.commit){term('<span class="p">$</span> ci run');term('<span class="r">error: nothing to release — a pipeline starts at a commit</span>');return;}
-  if(n<5){term('<span class="p">$</span> ci run');term(`<span class="r">error: incomplete pipeline — ${n}/5 stages present</span>`);return;}
-  let cur='commit',chain=[],guard=0;
-  while(cur&&guard++<12){chain.push(cur);const nx=links.find(l=>l.a===cur);cur=nx?nx.b:null;}
-  const valid=chain.length===5&&chain.every((c,i)=>c===ORDER[i]);
-  if(!valid){
-    term('<span class="p">$</span> ci run');
-    const junk=chain.find(c=>c==='vibes'||c==='friday');
-    if(junk){term(`<span class="r">error: "${PARTS.find(x=>x.id===junk).n}" is not a release gate</span>`);
-      term('<span class="d">  a demo is one test case; a gate is a threshold you can fail</span>');}
-    else if(chain.indexOf('prod')>-1&&chain.indexOf('evals')>chain.indexOf('prod')){
-      term('<span class="r">error: evals run after production — your users are the test suite</span>');}
-    else if(chain.length<5){term(`<span class="r">error: broken chain — stopped after ${chain.length} stage(s)</span>`);
-      term('<span class="d">  connect output → input all the way to production</span>');}
-    else{term('<span class="r">error: invalid stage order</span>');
-      term('<span class="d">  expected: commit → evals → security → canary → prod</span>');}
+function calc(){
+  const rq=reqPerDay(), win=+$('tin').value, wout=+$('tout2').value;
+  const tin=win*1.35, tout=wout*1.35;             // words → tokens
+  const perMonth=rq*30;
+  const inM=perMonth*tin/1e6, outM=perMonth*tout/1e6;
+  $('vReq').textContent=fmtN(rq);
+  $('vIn').textContent=fmtN(win);
+  $('vOut').textContent=fmtN(wout);
+  $('mTok').textContent=(inM+outM).toFixed(1)+'M TOKENS/MO';
+  const rows=MODELS.map(m=>{
+    const cost=m.in*inM+m.out*outM;
+    const blocked=[];
+    if(need.priv&&!m.priv)blocked.push('data leaves your machine');
+    if(need.offline&&!m.off)blocked.push('needs internet');
+    if(need.hard&&m.power<3)blocked.push('too small for hard reasoning');
+    return {m,cost,blocked};
+  });
+  const max=Math.max(...rows.map(r=>r.cost),0.001);
+  $('bars').innerHTML=rows.map(r=>`
+    <div class="row2 ${r.blocked.length?'out':''}">
+      <div class="top"><span>${r.m.n}</span><span class="amt" style="color:${r.m.c}">${money(r.cost)}<span style="color:var(--ink-3);font-weight:400">/mo</span></span></div>
+      <div class="track2"><div class="fill2" style="width:${Math.max(2,r.cost/max*100).toFixed(1)}%;background:${r.m.c}"></div></div>
+      <div class="meta"><span>${r.m.ram}</span><span>${r.m.lat}</span>
+        ${r.blocked.length?`<span class="tagx">✗ ${r.blocked[0]}</span>`:`<span>${r.m.note}</span>`}</div>
+    </div>`).join('');
+  const ok=rows.filter(r=>!r.blocked.length);
+  const p=$('pick');
+  if(!ok.length){
+    p.innerHTML=`<div class="big2">Nothing fits all three constraints.</div>
+      <div class="why2">Offline + private + hard reasoning is the one combination today's laptop models can't cover. Something has to give — usually you relax "hard reasoning" and split the work: the local model handles the easy 80%, and only the tricky cases go to an API.</div>`;
     return;
   }
-  running=true;
-  const script=[
-    ['<span class="p">$</span> git push origin prompt/v7',280],
-    ['',140],
-    ['<span class="p">$</span> deepeval run --golden tests/',360],
-    ['<span class="d">  faithfulness      0.93 / 0.80</span>  <span class="g">pass</span>',360],
-    ['<span class="d">  answer_relevancy  0.89 / 0.80</span>  <span class="g">pass</span>',360],
-    ['<span class="d">  context_recall    0.91 / 0.80</span>  <span class="g">pass</span>',360],
-    ['<span class="g">  12 passed, 0 failed</span>',400],
-    ['',140],
-    ['<span class="p">$</span> redteam scan --suite owasp-llm',380],
-    ['<span class="d">  injection probes 40/40 blocked</span>   <span class="g">pass</span>',380],
-    ['<span class="d">  pii leak probes  25/25 blocked</span>   <span class="g">pass</span>',400],
-    ['',140],
-    ['<span class="p">$</span> deploy --canary 5%',380],
-    ['<span class="y">[canary]</span> <span class="d">5% traffic · 10 min window</span>',400],
-    ['<span class="y">[canary]</span> <span class="d">faithfulness 0.92 · p95 1.2s · cost -4%</span>',420],
-    ['<span class="g">  canary healthy — promoting</span>',400],
-    ['',140],
-    ['<span class="p">$</span> deploy --promote 100%',380],
-    ['<span class="d">  langfuse tracing enabled · alerts armed</span>',400],
-    ['<span class="g">✓ prompt v7 live — rollback available for 24h</span>',0]
-  ];
-  let t=0;script.forEach(([h,g])=>{setTimeout(()=>term(h),t);t+=g;});
-  ORDER.forEach((id,i)=>setTimeout(()=>{placed[id].classList.add('live');
-    document.querySelectorAll('#runleds .led')[i].classList.add('on');},1400+i*1100));
-  setTimeout(()=>{canvas.classList.add('lit');
-    document.querySelectorAll('.term-bar .dots i').forEach((d,i)=>setTimeout(()=>d.classList.add('on'),i*130));
-    ropes.querySelectorAll('path').forEach((p,i)=>setTimeout(()=>{
-      const d=document.createElementNS('http://www.w3.org/2000/svg','circle');
-      d.setAttribute('r','4.5');d.setAttribute('fill','#059669');ropes.appendChild(d);
-      const L=p.getTotalLength();let k=0;
-      const iv=setInterval(()=>{k+=.04;const pt=p.getPointAtLength(L*Math.min(k,1));
-        d.setAttribute('cx',pt.x);d.setAttribute('cy',pt.y);
-        if(k>=1){clearInterval(iv);d.remove();}},14);},i*1100));},1400);
-  setTimeout(()=>{m1.textContent='12/12';m2.textContent='0.92';m3.textContent='1.2s';m4.textContent='100%';
-    document.getElementById('metrics').classList.add('on');running=false;},t+200);
-};
-document.getElementById('reset').onclick=()=>{
-  Object.keys(placed).forEach(id=>placed[id].remove());
-  placed={};links=[];ropes.innerHTML='';hint.style.display='block';fillRack();
-  document.getElementById('metrics').classList.remove('on');canvas.classList.remove('lit');
-  document.querySelectorAll('#runleds .led').forEach(l=>l.classList.remove('on'));
-  document.querySelectorAll('.term-bar .dots i').forEach(d=>d.classList.remove('on'));
-  clearTerm();updateReqs();};
+  const cheapest=ok.reduce((a,b)=>a.cost<=b.cost?a:b);
+  const rq2=reqPerDay();
+  let why;
+  if(cheapest.cost===0)
+    why=`At ${fmtN(rq2)} requests a day this runs on your own hardware for <b>nothing</b>. Every hosted option here charges for the same work. Start local; move only if quality forces you.`;
+  else if(cheapest.m.id==='hs')
+    why=`Your constraints rule out local, and the small hosted tier handles this volume for <b>${money(cheapest.cost)} a month</b>. The frontier tier costs roughly ${(MODELS[3].in/MODELS[2].in).toFixed(0)}× more — only worth it if quality visibly breaks.`;
+  else
+    why=`Hard reasoning plus this volume lands you on the frontier tier at <b>${money(cheapest.cost)} a month</b>. Before paying that: try a better prompt, then RAG. Most "the model isn't smart enough" problems are actually prompt problems.`;
+  p.innerHTML=`<div class="band">recommended</div>
+    <div class="big2">${cheapest.m.n}</div><div class="why2">${why}</div>`;
+}
+['req','tin','tout2'].forEach(id=>$(id).addEventListener('input',calc));
+document.querySelectorAll('.tg').forEach(b=>b.onclick=()=>{
+  need[b.dataset.t]=!need[b.dataset.t];b.classList.toggle('on',need[b.dataset.t]);calc();});
+calc();
+
 document.querySelectorAll('.sticker').forEach(st=>{
   const sec=st.closest('.view');let sx,sy,ox,oy;
   st.addEventListener('pointerdown',e=>{e.preventDefault();st.setPointerCapture(e.pointerId);
